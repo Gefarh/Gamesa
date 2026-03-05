@@ -1,0 +1,25 @@
+<world>
+	<player hp="40" max-hp="100">
+		<inventory>
+			<item id="rusty_key" name="rezavy_klic" type="consumables" quantity="1"/>
+			<item id="bread" name="chleba" type="food" heal="10" quantity="3"/>
+			<item id="dagger" name="dyka" type="weapon" dmg="2" durability="42" max-durability="87"/>
+		</inventory>
+	</player>
+	<locations>
+		<location id="cell" current="true">
+			<name>Vlhká kobka</name>
+			<desc>Tmavá místnost, kde kape voda ze stropu.</desc>
+			<exits>
+				<exit direction="north" target="corridor"/>
+			</exits>
+		</location>
+		<location id="corridor" current="false">
+			<name>Dlouhá chodba</name>
+			<desc>Kamenná chodba s pochodněmi.</desc>
+			<exits>
+				<exit direction="south" target="cell"/>
+			</exits>
+		</location>
+	</locations>
+</world>

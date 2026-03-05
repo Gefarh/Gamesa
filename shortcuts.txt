@@ -1,0 +1,55 @@
+const { XmlParser, Xslt } = require('xslt-processor');
+const fs = require('fs');
+const readline = require('readline');
+
+// Nastavení vstupu z konzole
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+async function render(xmlData, xslFile) {
+    const xslData = fs.readFileSync(xslFile, 'utf8');
+    const parser = new XmlParser();
+    const xslt = new Xslt();
+
+    const xml = parser.xmlParse(xmlData);
+    const xsl = parser.xmlParse(xslData);
+
+    // Použijeme tvůj ověřený způsob s kontrolou funkce
+    let result = (typeof xslt.xsltProcess === 'function')
+        ? await xslt.xsltProcess(xml, xsl)
+        : await xslt.process(xml, xsl);
+
+    console.clear();
+    console.log(result);
+    return result; // Vracíme výsledek, kdyby ho Node.js potřeboval pro logiku
+}
+async function handleInput(input) {
+    let xmlString = fs.readFileSync('./world.xml', 'utf8');
+
+    rl.question('Co uděláš? > ', async (input) => {
+        const command = input.toLowerCase().trim();
+
+        if (command === 'konec') {
+            console.log("Díky za hraní!");
+            rl.close();
+            return;
+        }
+        if (command === 'inventory' || command === 'inventar') {
+            await render(xmlString, './inventory.xsl');
+        }
+        setTimeout(handleInput, 1000);
+
+        if (command === 'help') {
+            console.log("Seznam příkazů:");
+            console.log("inventory - zobrazí inventář");
+            console.log("konec - ukončí hru");
+        }
+
+        if (command === 'sever')
+    });
+}
+
+console.log("Hra se spouští...");
+handleInput();
