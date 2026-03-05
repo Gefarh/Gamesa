@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@xmldom/xmldom": "^0.8.11",
     "xslt-processor": "^5.0.4"
   }
 }
