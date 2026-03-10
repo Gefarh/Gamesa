@@ -1,24 +1,297 @@
 <world>
-	<player hp="40" max-hp="100">
-		<inventory>
-			<item id="rusty_key" name="rezavy_klic" type="consumables" quantity="1"/>
-			<item id="bread" name="chleba" type="food" heal="10" quantity="3"/>
-			<item id="dagger" name="dyka" type="weapon" dmg="2" durability="42" max-durability="87"/>
-		</inventory>
-	</player>
 	<locations>
-		<location id="cell" current="true">
+		<location id="square">
+			<name>Náměstí</name>
+			<desc>Malé náměstí uprostřed městečka.</desc>
+			<exits>
+				<exit direction="north" target="pub"/>
+				<exit direction="west" target="blacksmith"/>
+				<exit direction="south" target="path_i"/>
+				<exit direction="east" target="market"/>
+			</exits>
+		</location>
+		<location id="pub">
+			<name>Hostinec</name>
+			<desc>Hlučné místo plné opilců.</desc>
+			<exits>
+				<exit direction="west" target="rich_block"/>
+				<exit direction="south" target="square"/>
+				<exit direction="east" target="poor_block"/>
+			</exits>
+		</location>
+		<location id="rich_block">
+			<name>Bohatá čtvrť</name>
+			<desc>Uklizené ulice a drahé domy.</desc>
+			<exits>
+				<exit direction="south" target="blacksmith"/>
+				<exit direction="east" target="pub"/>
+			</exits>
+		</location>
+		<location id="blacksmith">
+			<name>Kovářství</name>
+			<desc>Kovářství plné nástrojů a zbraní.</desc>
+			<exits>
+				<exit direction="north" target="rich_block"/>
+				<exit direction="east" target="square"/>
+				<exit direction="south" target="forest_i"/>
+			</exits>
+		</location>
+		<location id="poor_block">
+			<name>Chudinská čtvrť</name>
+			<desc>Špinavé ulice a chudé domy.</desc>
+			<exits>
+				<exit direction="south" target="market"/>
+				<exit direction="west" target="pub"/>
+				<exit direction="east" target="field_iii"/>
+			</exits>
+		</location>
+		<location id="market">
+			<name>Tržiště</name>
+			<desc>Rušné tržiště plné stánků a lidí.</desc>
+			<exits>
+				<exit direction="north" target="poor_block"/>
+				<exit direction="west" target="square"/>
+				<exit direction="south" target="slums"/>
+				<exit direction="east" target="path_iv"/>
+			</exits>
+		</location>
+		<location id="slums">
+			<name>Ghetto</name>
+			<desc>Polorozpadlé domy, špína a smrad.</desc>
+			<exits>
+				<exit direction="north" target="market"/>
+				<exit direction="south" target="forest_xi"/>
+				<exit direction="east" target="field_i"/>
+				<exit direction="west" target="path_i"/>
+			</exits>
+		</location>
+		<location id="path_i">
+			<name>Cesta</name>
+			<desc>Úzká cesta vedoucí do města.</desc>
+			<exits>
+				<exit direction="north" target="square"/>
+				<exit direction="south" target="path_ii"/>
+				<exit direction="east" target="slums"/>
+				<exit direction="west" target="forest_i"/>
+			</exits>
+		</location>
+		<location id="path_ii">
+			<name>Cesta</name>
+			<desc>Úzká cesta vedoucí hlouběji do lesa.</desc>
+			<exits>
+				<exit direction="north" target="path_i"/>
+				<exit direction="south" target="path_iii"/>
+				<exit direction="west" target="forest_ii"/>
+				<exit direction="east" target="forest_xi"/>
+			</exits>
+		</location>
+		<location id="path_iii">
+			<name>Cesta</name>
+			<desc>Úzká cesta vedoucí ke kostelu.</desc>
+			<exits>
+				<exit direction="north" target="path_ii"/>
+				<exit direction="south" target="forest_v"/>
+				<exit direction="east" target="forest_iii"/>
+				<exit direction="west" target="church"/>
+			</exits>
+		</location>
+		<location id="forest_i">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="blacksmith"/>
+				<exit direction="south" target="forest_ii"/>
+				<exit direction="east" target="path_i"/>
+			</exits>
+		</location>
+		<location id="forest_ii">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="forest_i"/>
+				<exit direction="south" target="forest_iii"/>
+				<exit direction="east" target="path_ii"/>
+			</exits>
+		</location>
+		<location id="forest_iii">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="forest_ii"/>
+				<exit direction="south" target="forest_iv"/>
+				<exit direction="east" target="forest_v"/>
+			</exits>
+		</location>
+		<location id="forest_iv">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="forest_iii"/>
+				<exit direction="east" target="forest_v"/>
+			</exits>
+		</location>
+		<location id="forest_v">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="path_iii"/>
+				<exit direction="west" target="forest_iv"/>
+				<exit direction="east" target="forest_vi"/>
+			</exits>
+		</location>
+		<location id="forest_vi">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="church"/>
+				<exit direction="east" target="forest_vii"/>
+				<exit direction="west" target="forest_v"/>
+			</exits>
+		</location>
+		<location id="forest_vii">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="forest_x"/>
+				<exit direction="east" target="forest_viii"/>
+				<exit direction="west" target="forest_vi"/>
+			</exits>
+		</location>
+		<location id="forest_viii">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="forest_ix"/>
+				<exit direction="west" target="forest_vii"/>
+			</exits>
+		</location>
+		<location id="forest_ix">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="field_v"/>
+				<exit direction="south" target="forest_viii"/>
+				<exit direction="west" target="forest_x"/>
+			</exits>
+		</location>
+		<location id="forest_x">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="forest_xii"/>
+				<exit direction="south" target="forest_vii"/>
+				<exit direction="west" target="church"/>
+				<exit direction="east" target="forest_ix"/>
+			</exits>
+		</location>
+		<location id="forest_xii">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="field_i"/>
+				<exit direction="south" target="forest_x"/>
+				<exit direction="west" target="forest_xi"/>
+				<exit direction="east" target="field_v"/>
+			</exits>
+		</location>
+		<location id="forest_xi">
+			<name>Les</name>
+			<desc>Hustý les plný stromů.</desc>
+			<exits>
+				<exit direction="north" target="slums"/>
+				<exit direction="south" target="church"/>
+				<exit direction="west" target="path_ii"/>
+				<exit direction="east" target="forest_xii"/>
+			</exits>
+		</location>
+		<location id="field_i">
+			<name>Pole</name>
+			<desc>Pole plné obilí.</desc>
+			<exits>
+				<exit direction="north" target="path_iv"/>
+				<exit direction="south" target="forest_xii"/>
+				<exit direction="west" target="slums"/>
+				<exit direction="east" target="field_ii"/>
+			</exits>
+		</location>
+		<location id="field_ii">
+			<name>Pole</name>
+			<desc>Pole plné obilí.</desc>
+			<exits>
+				<exit direction="north" target="path_v"/>
+				<exit direction="south" target="field_v"/>
+				<exit direction="west" target="field_i"/>
+			</exits>
+		</location>
+		<location id="field_iii">
+			<name>Pole</name>
+			<desc>Pole plné obilí.</desc>
+			<exits>
+				<exit direction="south" target="path_iv"/>
+				<exit direction="west" target="poor_block"/>
+				<exit direction="east" target="field_iv"/>
+			</exits>
+		</location>
+		<location id="field_iv">
+			<name>Pole</name>
+			<desc>Pole plné obilí.</desc>
+			<exits>
+				<exit direction="south" target="path_v"/>
+				<exit direction="west" target="field_iii"/>
+			</exits>
+		</location>
+		<location id="cell">
 			<name>Vlhká kobka</name>
 			<desc>Tmavá místnost, kde kape voda ze stropu.</desc>
 			<exits>
 				<exit direction="north" target="corridor"/>
 			</exits>
 		</location>
-		<location id="corridor" current="false">
+		<location id="corridor">
 			<name>Dlouhá chodba</name>
 			<desc>Kamenná chodba s pochodněmi.</desc>
 			<exits>
 				<exit direction="south" target="cell"/>
+				<exit direction="staircase" target="church"/>
+			</exits>
+		</location>
+		<location id="Path IV">
+			<name>Cesta</name>
+			<desc>Úzká cesta vedoucí do pole.</desc>
+			<exits>
+				<exit direction="north" target="field_iii"/>
+				<exit direction="south" target="field_i"/>
+				<exit direction="west" target="market"/>
+				<exit direction="east" target="path_v"/>
+			</exits>
+		</location>
+		<location id="path_v">
+			<name>Cesta</name>
+			<desc>Úzká cesta vedoucí do pole.</desc>
+			<exits>
+				<exit direction="south" target="field_ii"/>
+				<exit direction="north" target="field_iv"/>
+				<exit direction="west" target="path_iv"/>
+			</exits>
+		</location>
+		<location id="field_v">
+			<name>Pole</name>
+			<desc>Pole plné obilí.</desc>
+			<exits>
+				<exit direction="north" target="field_ii"/>
+				<exit direction="south" target="forest_ix"/>
+				<exit direction="west" target="forest_xii"/>
+			</exits>
+		</location>
+		<location id="church">
+			<name>Kostel</name>
+			<desc>Polorozpadlý kostel.</desc>
+			<exits>
+				<exit direction="north" target="forest_xi"/>
+				<exit direction="south" target="forest_vi"/>
+				<exit direction="west" target="path_iii"/>
+				<exit direction="east" target="forest_x"/>
+				<exit direction="staircase" target="corridor"/>
 			</exits>
 		</location>
 	</locations>
