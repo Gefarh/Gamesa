@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <character>
     <name>strider</name>
-    <location>blacksmith</location> 
+    <location>forest_xi</location> 
     <hp>100</hp>
-    <inventory/>
+    <inventory>
+        <item>meč</item>
+        <item>štít</item>
+    </inventory>
 </character>

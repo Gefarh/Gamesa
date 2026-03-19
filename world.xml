@@ -255,7 +255,7 @@
 				<exit direction="staircase" target="church"/>
 			</exits>
 		</location>
-		<location id="Path IV">
+		<location id="path_iv">
 			<name>Cesta</name>
 			<desc>Úzká cesta vedoucí do pole.</desc>
 			<exits>

@@ -23,6 +23,43 @@ const characterTemplate = `<?xml version="1.0" encoding="UTF-8"?>
     <inventory></inventory>
 </character>`;
 
+async function aktualizujMapu() {
+    try {
+        // 1. Přečteme oba soubory
+        const charData = fs.readFileSync(souborPostavy, 'utf8');
+        const tmxData = fs.readFileSync('./mapa/mapa.tmx', 'utf8');
+
+        // 2. Vymažeme z nich úvodní <?xml...?> hlavičky, abychom je mohli spojit
+        const cleanChar = charData.replace(/<\?xml.*?\?>/g, '');
+        const cleanTmx = tmxData.replace(/<\?xml.*?\?>/g, '');
+
+        // 3. Slepíme je pod jeden hlavní tag <game>
+        const combinedXml = `<?xml version="1.0" encoding="UTF-8"?>
+        <game>
+            ${cleanChar}
+            ${cleanTmx}
+        </game>`;
+
+        // 4. Transformace
+        const xslData = fs.readFileSync('./mapa.xsl', 'utf8');
+        const parser = new XmlParser();
+        const xslt = new Xslt();
+
+        const xml = parser.xmlParse(combinedXml);
+        const xsl = parser.xmlParse(xslData);
+
+        let htmlResult = (typeof xslt.xsltProcess === 'function')
+            ? await xslt.xsltProcess(xml, xsl)
+            : await xslt.process(xml, xsl);
+
+        fs.writeFileSync('./zobrazeni.html', htmlResult, 'utf8');
+    } catch (error) {
+        console.log("Chyba při generování mapy:", error.message);
+    }
+}
+
+
+
 // Funkce na spuštění hry - zeptá se na jméno
 function startHry() {
     console.clear();
@@ -65,64 +102,11 @@ function nactiPostavu() {
     aktualniLokaceId = doc.getElementsByTagName('location')[0].textContent;
 
     console.log("Hra připravena. Napiš 'help' pro nápovědu.");
-    ukazLokaci(); // Vypíše, kde postava aktuálně je
-    handleInput(); // Spustíme tvou existující smyčku
-}
-
-function MovePlayer(smer) {
-    // 1. Přečteme mapu světa (pouze pro čtení)
-    const worldRaw = fs.readFileSync('./world.xml', 'utf8');
-    const parser = new DOMParser();
-    const worldDoc = parser.parseFromString(worldRaw, 'text/xml');
-    const locations = worldDoc.getElementsByTagName('location');
-
-    let currentLocation = null;
-
-    // 2. Najdeme aktuální lokaci podle ID, které má postava uložené
-    for (let i = 0; i < locations.length; i++) {
-        if (locations[i].getAttribute('id') === aktualniLokaceId) {
-            currentLocation = locations[i];
-            break;
-        }
-    }
-
-    if (!currentLocation) {
-        console.log("Chyba: Tvá aktuální lokace neexistuje ve world.xml!");
-        return;
-    }
-
-    // 3. Kontrola východů
-    let targetId = null;
-    const exits = currentLocation.getElementsByTagName('exit');
-    for (let i = 0; i < exits.length; i++) {
-        if (exits[i].getAttribute('direction') === smer) {
-            targetId = exits[i].getAttribute('target');
-            break;
-        }
-    }
-
-    if (!targetId) {
-        console.log(`\nNemůžeš jít na ${smer}, zeď hlavou neprorazíš.`);
-        return;
-    }
-
-    // --- ZÁPIS DO SOUBORU POSTAVY ---
-    // Změníme aktuální ID na to cílové
-    aktualniLokaceId = targetId;
-
-    // Načteme XML postavy, upravíme <location> a uložíme
-    const charRaw = fs.readFileSync(souborPostavy, 'utf8');
-    const charDoc = parser.parseFromString(charRaw, 'text/xml');
-    charDoc.getElementsByTagName('location')[0].textContent = aktualniLokaceId;
-
-    const serializer = new XMLSerializer();
-    fs.writeFileSync(souborPostavy, serializer.serializeToString(charDoc), 'utf8');
-
-    // Vykreslíme novou místnost
     ukazLokaci();
+    handleInput();
 }
 
-// Pomocná funkce pro vypsání textu místnosti bez toho, abys hýbal hráčem
+
 function ukazLokaci() {
     const worldRaw = fs.readFileSync('./world.xml', 'utf8');
     const parser = new DOMParser();
@@ -137,7 +121,6 @@ function ukazLokaci() {
             const roomName = nameNode ? nameNode.textContent : "Neznámá místnost";
             const roomDesc = descNode ? descNode.textContent : "Zde není nic zajímavého k vidění.";
 
-            console.clear();
             console.log(`\nJsi zde: ${roomName}`);
             console.log(`----------------------------------------`);
             console.log(`${roomDesc}\n`);
@@ -146,34 +129,34 @@ function ukazLokaci() {
     }
 }
 
-async function render(xmlData, xslFile) {
-    const xslData = fs.readFileSync(xslFile, 'utf8');
-    const parser = new XmlParser();
-    const xslt = new Xslt();
-
-    const xml = parser.xmlParse(xmlData);
-    const xsl = parser.xmlParse(xslData);
-
-    // Použijeme tvůj ověřený způsob s kontrolou funkce
-    let result = (typeof xslt.xsltProcess === 'function')
-        ? await xslt.xsltProcess(xml, xsl)
-        : await xslt.process(xml, xsl);
-
-    console.clear();
-    console.log(result);
-    return result; // Vracíme výsledek, kdyby ho Node.js potřeboval pro logiku
-}
-
-// Globální proměnná pro aktuálně hrající postavu (musíš ji nastavit při výběru postavy)
-// let souborPostavy = './p-gandalf.xml'; 
-
-function MovePlayer(smer) {
-    // 1. ZJISTÍME, KDE JE POSTAVA (Přečteme soubor postavy)
+function ukazInventar() {
     const charRaw = fs.readFileSync(souborPostavy, 'utf8');
     const parser = new DOMParser();
     const charDoc = parser.parseFromString(charRaw, 'text/xml');
 
-    // Získáme aktuální ID lokace z XML postavy (např. <location>start_room</location>)
+    const inventory = charDoc.getElementsByTagName('inventory')[0];
+    const items = inventory.getElementsByTagName('item'); // Dejme tomu, že tam budou tagy <item>
+
+    console.clear();
+    console.log("=== TVŮJ INVENTÁŘ ===");
+
+    if (items.length === 0) {
+        console.log("Máš prázdné kapsy.");
+    } else {
+        for (let i = 0; i < items.length; i++) {
+            console.log("- " + items[i].textContent);
+        }
+    }
+    console.log("=====================\n");
+}
+
+function MovePlayer(smer) {
+    // 1. ZJISTÍME, KDE JE POSTAVA
+    const charRaw = fs.readFileSync(souborPostavy, 'utf8');
+    const parser = new DOMParser();
+    const charDoc = parser.parseFromString(charRaw, 'text/xml');
+
+    // Získáme aktuální ID lokace z XML postavy
     const locationNode = charDoc.getElementsByTagName('location')[0];
     const currentLocationId = locationNode.textContent;
 
@@ -231,6 +214,8 @@ function MovePlayer(smer) {
         const newCharRaw = serializer.serializeToString(charDoc);
         fs.writeFileSync(souborPostavy, newCharRaw, 'utf8');
 
+        aktualizujMapu();
+
         // Získáme název a popis nové místnosti z world.xml pro výpis
         const nameNode = targetLocation.getElementsByTagName('name')[0];
         const descNode = targetLocation.getElementsByTagName('desc')[0];
@@ -249,8 +234,6 @@ function MovePlayer(smer) {
 }
 
 async function handleInput(input) {
-    let xmlString = fs.readFileSync('./world.xml', 'utf8');
-
     rl.question('Co uděláš? > ', async (input) => {
         const command = input.toLowerCase().trim();
 
@@ -260,7 +243,7 @@ async function handleInput(input) {
             return;
         }
         if (command === 'inventory' || command === 'inventar') {
-            await render(xmlString, './inventory.xsl');
+            ukazInventar();
         }
         setTimeout(handleInput, 1000);
 
@@ -276,17 +259,17 @@ async function handleInput(input) {
             console.log("   schody      - jde na schody");
         }
 
-        if (command === 'sever' || command === 'north') {
+        if (command === 'sever' || command === 'north' || command === 'w') {
             MovePlayer('north');
         }
 
-        if (command === 'jih' || command === 'south') {
+        if (command === 'jih' || command === 'south' || command === 's') {
             MovePlayer('south');
         }
-        if (command === 'vychod' || command === 'east') {
+        if (command === 'vychod' || command === 'east' || command === 'd') {
             MovePlayer('east');
         }
-        if (command === 'zapad' || command === 'west') {
+        if (command === 'zapad' || command === 'west' || command === 'a') {
             MovePlayer('west');
         }
         if (command === 'schody' || command === 'staircase') {
